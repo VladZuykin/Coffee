@@ -1,10 +1,12 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QWidget
-from PyQt5 import uic
 from PyQt5 import QtCore
 import sys
 import sqlite3
 
-DB_NAME = "coffee.sqlite"
+from addEditCoffeeForm import Ui_addEditForm
+from mainWindow import Ui_CoffeeWindow
+
+DB_NAME = "data/coffee.sqlite"
 
 
 def do_with_db(db_name, clause_string, *additives, returning=False):
@@ -20,13 +22,13 @@ def do_with_db(db_name, clause_string, *additives, returning=False):
         return data
 
 
-class CoffeeWindow(QMainWindow):
+class CoffeeWindow(QMainWindow, Ui_CoffeeWindow):
     def __init__(self):
         super().__init__()
-        self.initUi()
+        self.init_ui()
 
-    def initUi(self):
-        uic.loadUi("main.ui", self)
+    def init_ui(self):
+        self.setupUi(self)
         self.refresh_table()
 
         self.addEditAction.triggered.connect(self.add_edit)
@@ -51,7 +53,7 @@ class CoffeeWindow(QMainWindow):
         self.add_edit_form.show()
 
 
-class AddEditCoffee(QWidget):
+class AddEditCoffee(QWidget, Ui_addEditForm):
     HEADER_TEXT = ("ID", "Название", "Степень обжарки", "Тип", "Вкус", "Цена, рублей", "Объем упаковки, граммов")
     DB_HAS_RECORD_CLAUSE = """
     SELECT count(*)
@@ -70,10 +72,10 @@ class AddEditCoffee(QWidget):
     def __init__(self, parent=None):
         super().__init__()
         self.parent = parent
-        uic.loadUi("addEditCoffeeForm.ui", self)
         self.init_ui()
 
     def init_ui(self):
+        self.setupUi(self)
         self.tableWidget.setRowCount(len(self.HEADER_TEXT))
         self.tableWidget.setColumnCount(1)
         self.tableWidget.setHorizontalHeaderLabels([""])
